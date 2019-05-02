@@ -1,88 +1,10 @@
-"""
- Race.py
- Tim Ubial
- 7 December 2017
- Version 0.1
+"""race.py
 """
 import random
 import pygame
+import constants
+import player
 
-# Constants
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GREEN = (0, 255, 0)
-RED = (255, 0, 0)
-
-WIDTH = 600
-HEIGHT = 800
-
-
-class Player(object):
-    """docstring for Player."""
-
-    def __init__(self, playernum):
-        super(Player, self).__init__()
-        self.last_button_pressed = pygame.K_ESCAPE
-        self._playernum = playernum
-        self._position = 0
-
-        if self._playernum == "one":
-            self.last_button_pressed = pygame.K_s
-        elif self._playernum == "two":
-            self.last_button_pressed = pygame.K_QUOTE
-
-    def move(self, key):
-        """moves player up"""
-
-        if self.validForwardKeypress(key):
-            self._position += 1
-        return self._position
-    
-    @property
-    def position(self):
-        return self._position
-
-    @property
-    def playernum(self):
-        return self._playernum
-
-    def validForwardKeypress(self, key):
-        if self._playernum == "one":
-            print(self.last_button_pressed, pygame.K_s, pygame.K_a)
-            if (self.last_button_pressed == pygame.K_s and key == pygame.K_a) or (
-                self.last_button_pressed == pygame.K_a and key == pygame.K_s
-            ):
-                if self.last_button_pressed == pygame.K_a:
-                    self.last_button_pressed = pygame.K_s
-                else:
-                    self.last_button_pressed = pygame.K_a
-                return True
-        elif self._playernum == "two":
-            if (
-                self.last_button_pressed == pygame.K_QUOTE and key == pygame.K_SEMICOLON
-            ) or (
-                self.last_button_pressed == pygame.K_SEMICOLON and key == pygame.K_QUOTE
-            ):
-                if self.last_button_pressed == pygame.K_QUOTE:
-                    self.last_button_pressed = pygame.K_SEMICOLON
-                else:
-                    self.last_button_pressed = pygame.K_QUOTE
-                return True
-        return False
-
-class MrWolf(object):
-    """docstring for MrWolf."""
-
-    def __init__(self):
-        super(MrWolf, self).__init__()
-
-        self.starttime = 0.0
-        self.difficulty = 0
-
-        self.facingforward = False
-
-    def turnaround(self):
-        facingforward is not facingforward
 
 class Game(object):
     # docstring for Game
@@ -93,13 +15,12 @@ class Game(object):
         Arguments:
         end - steps needed to win
         """
-        self._playerone = Player("one")
-        self._playertwo = Player("two")
+        self._playerone = player.Player("one")
+        self._playertwo = player.Player("two")
+
+        self._wolf = player.MrWolf()
+
         self._stepsend = end
-    
-    @property
-    def end(self):
-        return self._end
 
     @property
     def get_playerone(self):
@@ -125,7 +46,7 @@ def main():
 
     pygame.init()
 
-    screen = pygame.display.set_mode([WIDTH, HEIGHT])
+    screen = pygame.display.set_mode([constants.WIDTH, constants.HEIGHT])
 
     pygame.display.set_caption("Race!")
 
@@ -146,10 +67,10 @@ def main():
                 if event.key == pygame.K_QUOTE or event.key == pygame.K_SEMICOLON:
                     game.get_playertwo.move(event.key)
 
-        screen.fill(WHITE)
+        screen.fill(constants.WHITE)
 
-        screen.blit(font.render(str(game.get_playerone.position), 1, BLACK, WHITE), (5, 5))
-        screen.blit(font.render(str(game.get_playertwo.position), 1, BLACK, WHITE), (5, 50))
+        screen.blit(font.render(str(game.get_playerone.position), 1, constants.BLACK, constants.WHITE), (5, 5))
+        screen.blit(font.render(str(game.get_playertwo.position), 1, constants.BLACK, constants.WHITE), (5, 50))
 
         # Check to see if game finished
         if game.gamefinished():

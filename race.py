@@ -23,12 +23,12 @@ class Player(object):
     def __init__(self, playernum):
         super(Player, self).__init__()
         self.last_button_pressed = pygame.K_ESCAPE
-        self.playernum = playernum
+        self._playernum = playernum
         self._position = 0
 
-        if self.playernum == "one":
+        if self._playernum == "one":
             self.last_button_pressed = pygame.K_s
-        elif self.playernum == "two":
+        elif self._playernum == "two":
             self.last_button_pressed = pygame.K_QUOTE
 
     def move(self, key):
@@ -42,8 +42,13 @@ class Player(object):
     def position(self):
         return self._position
 
+    @property
+    def playernum(self):
+        return self._playernum
+
     def validForwardKeypress(self, key):
-        if self.playernum == "one":
+        if self._playernum == "one":
+            print(self.last_button_pressed, pygame.K_s, pygame.K_a)
             if (self.last_button_pressed == pygame.K_s and key == pygame.K_a) or (
                 self.last_button_pressed == pygame.K_a and key == pygame.K_s
             ):
@@ -52,7 +57,7 @@ class Player(object):
                 else:
                     self.last_button_pressed = pygame.K_a
                 return True
-        elif self.playernum == "two":
+        elif self._playernum == "two":
             if (
                 self.last_button_pressed == pygame.K_QUOTE and key == pygame.K_SEMICOLON
             ) or (
@@ -96,19 +101,27 @@ class Game(object):
     def end(self):
         return self._end
 
+    @property
+    def get_playerone(self):
+        return self._playerone
+
+    @property
+    def get_playertwo(self):
+        return self._playertwo
+
     def gamefinished(self):
         """returns the winning player if the game is ended
         if game is not finished, returns None"""
 
-        if self._playerone.position > self._stepsend:
+        if self._playerone.position >= self._stepsend:
             return self._playerone
-        elif self._playertwo.position > self._stepsend:
+        elif self._playertwo.position >= self._stepsend:
             return self._playertwo
         else:
             return None
         
 def main():
-    game = Game()
+    game = Game(10)
 
     pygame.init()
 
@@ -129,17 +142,19 @@ def main():
                 done = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_s or event.key == pygame.K_a:
-                    playerone.move(event.key)
+                    game.get_playerone.move(event.key)
                 if event.key == pygame.K_QUOTE or event.key == pygame.K_SEMICOLON:
-                    playertwo.move(event.key)
+                    game.get_playertwo.move(event.key)
 
         screen.fill(WHITE)
 
-        screen.blit(font.render(str(playerone.position), 1, BLACK, WHITE), (5, 5))
-        screen.blit(font.render(str(playertwo.position), 1, BLACK, WHITE), (5, 50))
+        screen.blit(font.render(str(game.get_playerone.position), 1, BLACK, WHITE), (5, 5))
+        screen.blit(font.render(str(game.get_playertwo.position), 1, BLACK, WHITE), (5, 50))
 
         # Check to see if game finished
-        if game
+        if game.gamefinished():
+            print(f"Player {game.gamefinished().playernum} wins!")
+            done = True
 
         pygame.display.flip()
         clock.tick(60)

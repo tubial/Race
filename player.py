@@ -1,15 +1,22 @@
 # player.py
 
 import pygame
+import random
+import constants
 
-class Player(object):
+class Player(pygame.sprite.Sprite):
     """docstring for Player."""
 
     def __init__(self, playernum):
-        super(Player, self).__init__()
+        super().__init__()
+
         self.last_button_pressed = pygame.K_ESCAPE
         self._playernum = playernum
         self._position = 0
+
+        self.image = pygame.Surface([200, 200])
+
+        self.rect = self.image.get_rect()
 
         if self._playernum == "one":
             self.last_button_pressed = pygame.K_s
@@ -21,7 +28,6 @@ class Player(object):
 
         if self.validForwardKeypress(key):
             self._position += 1
-        return self._position
     
     @property
     def position(self):
@@ -55,12 +61,18 @@ class Player(object):
                 return True
         return False
 
-class MrWolf(object):
+class MrWolf(pygame.sprite.Sprite):
     """docstring for MrWolf."""
 
     def __init__(self):
-        self.starttime = 0.0
+        super().__init__()
+        
         self.difficulty = 0
+
+        self.image = pygame.Surface((constants.WIDTH, 10))
+        self.image.fill(constants.RED)
+
+        self.rect = self.image.get_rect()
 
         self._facingforward = False
 
@@ -68,5 +80,9 @@ class MrWolf(object):
     def facingforward(self):
         return self._facingforward
 
-    def turnaround(self):
-        self._facingforward = not self._facingforward
+    def update(self):
+        """Will update the wolf to be facing forward after a random amount of time."""
+        if self._facingforward:
+            pass
+        else:
+            pass

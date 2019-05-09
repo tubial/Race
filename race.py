@@ -17,10 +17,19 @@ class Game(object):
         """
         self._playerone = player.Player("one")
         self._playertwo = player.Player("two")
+        self._players = [
+            [self._playerone, 0],
+            [self._playertwo, 0]
+        ]
 
         self._wolf = player.MrWolf()
 
-        self._stepsend = end
+        self._goal = end
+
+        self._sprites = pygame.sprite.Group()
+        self._sprites.add(self._playerone)
+        self._sprites.add(self._playertwo)
+        self._sprites.add(self._wolf)
 
     @property
     def get_playerone(self):
@@ -30,19 +39,46 @@ class Game(object):
     def get_playertwo(self):
         return self._playertwo
 
+    @property
+    def get_mrwolf(self):
+        return self._wolf
+
+    @property
+    def get_players(self):
+        return self._players
+
+    def update(self, event):
+        if event.key == pygame.K_s or event.key == pygame.K_a:
+            self._playerone.move(event.key)
+        if event.key == pygame.K_QUOTE or event.key == pygame.K_SEMICOLON:
+            self._playertwo.move(event.key)
+
+    def player_status(self):
+        """ status of players
+        returns:
+        list of players and percentages to finish"""
+        # update player's progress
+        for pl in self._players:
+            pl[1] = pl[0].position / self._goal
+
+        return self._players
+
     def gamefinished(self):
         """returns the winning player if the game is ended
         if game is not finished, returns None"""
 
-        if self._playerone.position >= self._stepsend:
+        if self._playerone.position >= self._goal:
             return self._playerone
-        elif self._playertwo.position >= self._stepsend:
+        elif self._playertwo.position >= self._goal:
             return self._playertwo
         else:
             return None
-        
+
+    def draw(self, screen):
+        self._sprites.draw(screen)
+
 def main():
-    game = Game(10)
+    game = Game(100)
 
     pygame.init()
 
@@ -62,15 +98,17 @@ def main():
             if event.type == pygame.QUIT:
                 done = True
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_s or event.key == pygame.K_a:
-                    game.get_playerone.move(event.key)
-                if event.key == pygame.K_QUOTE or event.key == pygame.K_SEMICOLON:
-                    game.get_playertwo.move(event.key)
+                game.update(event)
 
         screen.fill(constants.WHITE)
 
-        screen.blit(font.render(str(game.get_playerone.position), 1, constants.BLACK, constants.WHITE), (5, 5))
-        screen.blit(font.render(str(game.get_playertwo.position), 1, constants.BLACK, constants.WHITE), (5, 50))
+        game.draw(screen)
+
+        for n, pl in enumerate(game.player_status()):
+            screen.blit(
+                font.render(str(pl[1]), 1, constants.BLACK, constants.WHITE),
+                (5, 5 * n * 10)
+            )
 
         # Check to see if game finished
         if game.gamefinished():

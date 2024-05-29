@@ -4,6 +4,7 @@ import pygame
 import random
 import constants
 
+
 class Player(pygame.sprite.Sprite):
     """docstring for Player."""
 
@@ -28,7 +29,9 @@ class Player(pygame.sprite.Sprite):
 
         if self.validForwardKeypress(key):
             self._position += 1
-    
+
+        return self._position
+
     @property
     def position(self):
         return self._position
@@ -61,12 +64,13 @@ class Player(pygame.sprite.Sprite):
                 return True
         return False
 
+
 class MrWolf(pygame.sprite.Sprite):
     """docstring for MrWolf."""
 
     def __init__(self):
         super().__init__()
-        
+
         self.difficulty = 0
 
         self.image = pygame.Surface((constants.WIDTH, 10))
@@ -82,7 +86,7 @@ class MrWolf(pygame.sprite.Sprite):
 
     def update(self):
         """Will update the wolf to be facing forward after a random amount of time."""
-        if self._facingforward:
+        if self.facingforward():
             pass
         else:
             pass

@@ -1,12 +1,13 @@
 """race.py
 """
+
 import random
 import pygame
 import constants
 import player
 
 
-class Game(object):
+class Game:
     # docstring for Game
 
     def __init__(self, end):
@@ -17,10 +18,7 @@ class Game(object):
         """
         self._playerone = player.Player("one")
         self._playertwo = player.Player("two")
-        self._players = [
-            [self._playerone, 0],
-            [self._playertwo, 0]
-        ]
+        self._players = [[self._playerone, 0], [self._playertwo, 0]]
 
         self._wolf = player.MrWolf()
 
@@ -54,9 +52,11 @@ class Game(object):
             self._playertwo.move(event.key)
 
     def player_status(self):
-        """ status of players
+        """status of players
+
         returns:
-        list of players and percentages to finish"""
+            list of players and percentages to finish
+        """
         # update player's progress
         for pl in self._players:
             pl[1] = pl[0].position / self._goal
@@ -76,6 +76,7 @@ class Game(object):
 
     def draw(self, screen):
         self._sprites.draw(screen)
+
 
 def main():
     game = Game(100)
@@ -107,7 +108,7 @@ def main():
         for n, pl in enumerate(game.player_status()):
             screen.blit(
                 font.render(str(pl[1]), 1, constants.BLACK, constants.WHITE),
-                (5, 5 * n * 10)
+                (5, 5 * n * 10),
             )
 
         # Check to see if game finished

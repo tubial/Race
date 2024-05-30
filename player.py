@@ -6,7 +6,7 @@ import constants
 
 
 class Player(pygame.sprite.Sprite):
-    """docstring for Player."""
+    """Player"""
 
     def __init__(self, playernum):
         super().__init__()
@@ -15,7 +15,7 @@ class Player(pygame.sprite.Sprite):
         self._playernum = playernum
         self._position = 0
 
-        self.image = pygame.Surface([200, 200])
+        self.image = pygame.Surface([10, 10])
 
         self.rect = self.image.get_rect()
 

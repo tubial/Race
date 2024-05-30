@@ -30,19 +30,19 @@ class Game:
         self._sprites.add(self._wolf)
 
     @property
-    def get_playerone(self):
+    def playerone(self) -> player.Player:
         return self._playerone
 
     @property
-    def get_playertwo(self):
+    def playertwo(self) -> player.Player:
         return self._playertwo
 
     @property
-    def get_mrwolf(self):
+    def mrwolf(self):
         return self._wolf
 
     @property
-    def get_players(self):
+    def players(self):
         return self._players
 
     def update(self, event):
@@ -91,6 +91,13 @@ def main():
 
     done = False
     clock = pygame.time.Clock()
+
+    # Set initial location of players
+    game.playerone.rect.bottom  = constants.HEIGHT
+    game.playerone.rect.left = 0
+
+    game.playertwo.rect.bottom = constants.HEIGHT
+    game.playertwo.rect.right = constants.WIDTH
 
     # -------- Main Program Loop -----------
     while not done:

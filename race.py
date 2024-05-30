@@ -34,10 +34,10 @@ class Game:
 
         # Set initial locations of the players
         self._playerone.rect.bottom = constants.HEIGHT
-        self._playerone.rect.left = 0
+        self._playerone.rect.left = 0 + constants.WIDTH // 4
 
         self._playertwo.rect.bottom = constants.HEIGHT
-        self._playertwo.rect.right = constants.WIDTH
+        self._playertwo.rect.right = constants.WIDTH - constants.WIDTH // 4
 
     @property
     def playerone(self) -> player.Player:
@@ -61,7 +61,7 @@ class Game:
         if event.key == pygame.K_QUOTE or event.key == pygame.K_SEMICOLON:
             self._playertwo.move(event.key)
 
-        self.playerone.rect.y, self.playertwo.rect.y = self.update_player_pos()
+        self.playerone.rect.bottom, self.playertwo.rect.bottom = self.update_player_pos()
 
     def update_player_pos(self) -> list[int]:
         """Returns player's y-coords"""

@@ -68,6 +68,8 @@ class Player(pygame.sprite.Sprite):
 class MrWolf(pygame.sprite.Sprite):
     """docstring for MrWolf."""
 
+    last_turn = 0
+
     def __init__(self):
         super().__init__()
 
@@ -78,15 +80,16 @@ class MrWolf(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-        self._facingforward = False
+        self.facingforward = False
 
-    @property
-    def facingforward(self):
-        return self._facingforward
+        self._next_turn = random.randrange(2, 8)
 
     def update(self):
-        """Will update the wolf to be facing forward after a random amount of time."""
-        if self.facingforward():
+        """Updates the wolf to be facing forward after a random amount of time."""
+        if self.facingforward:
             pass
         else:
-            pass
+            if pygame.time.get_ticks() - self.last_turn >= self._next_turn:
+                self.facingforward = True
+
+                self._next_turn = random.randrange(2, 8)

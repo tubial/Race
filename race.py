@@ -8,26 +8,36 @@ import player
 
 
 class Game:
-    # docstring for Game
+    # Mr Wolf game
 
-    def __init__(self, end):
+    def __init__(self, goal: int, screen: pygame.Surface):
         """Game state
 
-        Arguments:
-        end - steps needed to win
+        Params:
+            end - steps needed to win
         """
         self._playerone = player.Player("one")
         self._playertwo = player.Player("two")
-        self._players = [[self._playerone, 0], [self._playertwo, 0]]
+        self._players = [self._playerone, self._playertwo]
 
         self._wolf = player.MrWolf()
 
-        self._goal = end
+        self._goal = goal
 
         self._sprites = pygame.sprite.Group()
         self._sprites.add(self._playerone)
         self._sprites.add(self._playertwo)
         self._sprites.add(self._wolf)
+
+        self._screen = screen
+        self._height = screen.get_height()
+
+        # Set initial locations of the players
+        self._playerone.rect.bottom = constants.HEIGHT
+        self._playerone.rect.left = 0
+
+        self._playertwo.rect.bottom = constants.HEIGHT
+        self._playertwo.rect.right = constants.WIDTH
 
     @property
     def playerone(self) -> player.Player:
@@ -42,7 +52,7 @@ class Game:
         return self._wolf
 
     @property
-    def players(self):
+    def players(self) -> list[player.Player]:
         return self._players
 
     def update(self, event):
@@ -51,17 +61,15 @@ class Game:
         if event.key == pygame.K_QUOTE or event.key == pygame.K_SEMICOLON:
             self._playertwo.move(event.key)
 
-    def player_status(self):
-        """status of players
+        self.playerone.rect.y, self.playertwo.rect.y = self.update_player_pos()
 
-        returns:
-            list of players and percentages to finish
-        """
-        # update player's progress
-        for pl in self._players:
-            pl[1] = pl[0].position / self._goal
+    def update_player_pos(self) -> list[int]:
+        """Returns player's y-coords"""
 
-        return self._players
+        return [
+            (self._height - ((item.position / self._goal) * self._height))
+            for item in self.players
+        ]
 
     def gamefinished(self):
         """returns the winning player if the game is ended
@@ -74,13 +82,11 @@ class Game:
         else:
             return None
 
-    def draw(self, screen):
-        self._sprites.draw(screen)
+    def draw(self):
+        self._sprites.draw(self._screen)
 
 
 def main():
-    game = Game(100)
-
     pygame.init()
 
     screen = pygame.display.set_mode([constants.WIDTH, constants.HEIGHT])
@@ -92,12 +98,7 @@ def main():
     done = False
     clock = pygame.time.Clock()
 
-    # Set initial location of players
-    game.playerone.rect.bottom  = constants.HEIGHT
-    game.playerone.rect.left = 0
-
-    game.playertwo.rect.bottom = constants.HEIGHT
-    game.playertwo.rect.right = constants.WIDTH
+    game = Game(50, screen)
 
     # -------- Main Program Loop -----------
     while not done:
@@ -110,13 +111,7 @@ def main():
 
         screen.fill(constants.WHITE)
 
-        game.draw(screen)
-
-        for n, pl in enumerate(game.player_status()):
-            screen.blit(
-                font.render(str(pl[1]), 1, constants.BLACK, constants.WHITE),
-                (5, 5 * n * 10),
-            )
+        game.draw()
 
         # Check to see if game finished
         if game.gamefinished():
